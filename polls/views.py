@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Question, Choice
+from django.http import JsonResponse
 
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -39,3 +40,17 @@ def results(request, question_id):
 	question = Question.objects.get(pk=question_id)
 	context = {'question':question}
 	return render(request, 'polls/results.html' , context)
+
+
+def data(request, id):
+	chodata = []
+
+	question = Question.objects.get(id = id)
+	choiceset = question.choice_set.all()
+
+	for  q in choiceset:
+		chodata.append({q.choice_text:q.votes})
+
+
+	print(chodata)
+	return JsonResponse(chodata, safe=False)
